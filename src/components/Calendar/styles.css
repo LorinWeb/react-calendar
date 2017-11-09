@@ -1,0 +1,36 @@
+.Calendar {
+  font-family: sans-serif;
+}
+
+.Calendar header {
+  padding: 10px;
+  position: relative;
+}
+
+.Calendar_ShiftDateControls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 20px 10px;
+}
+
+.Calendar__Month,
+.Calendar__Year {
+  -webkit-appearance: none;
+  display: inline-block;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  font-size: 1.7em;
+  outline: none;
+}
+
+.Calendar__Year {
+  font-weight: 300;
+  margin: 0.2em;
+}
+
+.Calendar__Year {
+  width: 115px;
+}

@@ -1,0 +1,46 @@
+.CalendarMonth {
+  padding-left: 1px;
+  padding-bottom: 1px;
+}
+
+.CalendarMonth__GridHeaders,
+.CalendarMonth__Days {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.CalendarMonth__GridHeaders {
+  margin-left: -1px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  grid-template-rows: repeat(1, auto);
+}
+
+.CalendarMonth__Days {
+  margin-top: -1px;
+  grid-template-rows: repeat(6, auto);
+}
+
+.CalendarMonth__Days > *,
+.CalendarMonth__GridHeaders > * {
+  margin-left: -1px;
+  margin-bottom: -1px;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0);
+  transition: border-color 0.3s, background-color 0.3s;
+  overflow: hidden;
+}
+
+.CalendarMonth__Days > * {
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.CalendarMonth__WeekDayName,
+.CalendarMonth .CalendarDay__Number {
+  padding: 10px;
+  text-align: end;
+}
