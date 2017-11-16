@@ -19,14 +19,9 @@ export const CalendarDay = ({
       onClick={onClickCallback}
     >
       <div>
-        <a
-          href=""
-          onClick={onClickCallback}
-          tabIndex="0"
-          className="CalendarDay__Number"
-        >
+        <button onClick={onClickCallback} className="Calendar__DayNumber">
           {day}
-        </a>
+        </button>
         {!!reminders.length && (
           <ul className="CalendarDay__Reminders">
             {reminders.map((reminder, i) => (

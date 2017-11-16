@@ -15,15 +15,13 @@ class Calendar extends React.Component {
     this.setToday();
   }
 
-  convertToCustomDateObject = (date, keepDay = true) => {
+  extractDateProps = (date, keepDay = true) => {
     return {
       year: date.getFullYear(),
       month: date.getMonth(),
       day: keepDay ? date.getDate() : null
     };
   };
-
-  convertToNativeDate = date => new Date(date.year, date.month, date.day);
 
   setDate(date) {
     this.setState({
@@ -33,69 +31,91 @@ class Calendar extends React.Component {
   }
 
   shiftYear(amount, date = this.state.date) {
-    const newDate = {
+    return this.setDate({
       ...date,
       year: date.year + amount,
       day: null
-    };
-    return this.setDate(newDate);
+    });
   }
 
   shiftMonth(amount, date = this.state.date) {
-    const newDate = this.convertToCustomDateObject(
-      this.convertToNativeDate({
-        ...date,
-        month: date.month + amount,
-        day: 1
-      }),
-      false
+    return this.setDate(
+      this.extractDateProps(new Date(date.year, date.month + amount, 1), false)
     );
-    return this.setDate(newDate);
   }
 
   shiftDay(amount, date = this.state.date) {
-    const newDate = this.convertToCustomDateObject(
-      this.convertToNativeDate({
-        ...date,
-        day: date.day + amount
-      })
+    return this.setDate(
+      this.extractDateProps(new Date(date.year, date.month, date.day + amount))
     );
-    return this.setDate(newDate);
+  }
+
+  getToday() {
+    return this.extractDateProps(new Date());
   }
 
   setToday() {
-    this.setDate(this.convertToCustomDateObject(new Date()));
+    this.setDate(this.getToday());
   }
 
+  countDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+
+  getDateObjects = (year, month) => {
+    const date = this.extractDateProps(new Date(year, month, 1));
+    return Array(this.countDaysInMonth(date.year, date.month))
+      .fill(date)
+      .map((date, i) => ({ ...date, day: i + 1 }));
+  };
+
+  getDaysToDisplay = (year, month) => {
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const daysFromPrevMonth = Math.abs(
+      this.state.startWeekOnMonday
+        ? firstDayIndex === 0 ? 6 : firstDayIndex - 1
+        : firstDayIndex
+    );
+    const thisMonth = this.getDateObjects(year, month);
+    const daysFromNextMonth = 42 - (daysFromPrevMonth + thisMonth.length);
+    return (daysFromPrevMonth > 0
+      ? this.getDateObjects(year, month - 1).splice(-daysFromPrevMonth)
+      : []
+    ).concat(
+      thisMonth,
+      this.getDateObjects(year, month + 1).splice(0, daysFromNextMonth)
+    );
+  };
+
   render() {
-    const self = this;
+    let dayNames = this.props.dayNames;
+    if (this.state.startWeekOnMonday) {
+      dayNames = [...dayNames, dayNames[0]];
+      dayNames.shift();
+    }
+
     return (
       <div className="Calendar">
-        <header>
-          <div className="Calendar_ShiftDateControls">
-            <button onClick={e => this.shiftMonth(-1)}>&lt;</button>
-            <button onClick={e => this.setToday()}>Today</button>
-            <button onClick={e => this.shiftMonth(1)}>&gt;</button>
-          </div>
-          <div className="Calendar_Date">
+        <header className="Calendar__Header">
+          <div className="Calendar__DateDisplayer">
             <span className="Calendar__Month">
               {this.props.monthNames[this.state.date.month]}
             </span>
             <span className="Calendar__Year">{this.state.date.year}</span>
           </div>
+          <div className="Calendar__DateShifter">
+            <button onClick={e => this.shiftMonth(-1)}>&lt;</button>
+            <button onClick={e => this.setToday()}>Today</button>
+            <button onClick={e => this.shiftMonth(1)}>&gt;</button>
+          </div>
         </header>
 
         <CalendarMonth
-          year={this.state.date.year}
-          month={this.state.date.month}
-          day={this.state.date.day}
-          startWeekOnMonday={this.state.startWeekOnMonday}
-          onSelectDay={function() {
-            self.setDate({
-              ...self.state.date,
-              day: this.day
-            });
-          }}
+          selectedDays={[JSON.stringify(this.state.date)]}
+          days={this.getDaysToDisplay(
+            this.state.date.year,
+            this.state.date.month
+          )}
+          dayNames={dayNames}
+          onSelectDay={this.setDate.bind(this)}
         />
       </div>
     );
@@ -117,12 +137,13 @@ Calendar.defaultProps = {
     'November',
     'December'
   ],
-  weekDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 };
 
 Calendar.propTypes = {
-  weekDayNames: PropTypes.array,
-  monthNames: PropTypes.array
+  dayNames: PropTypes.array,
+  monthNames: PropTypes.array,
+  startWeekOnMonday: PropTypes.bool
 };
 
 export default Calendar;

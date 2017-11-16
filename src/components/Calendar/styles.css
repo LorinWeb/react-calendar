@@ -1,23 +1,32 @@
 .Calendar {
   font-family: sans-serif;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.Calendar header {
+.Calendar .Calendar__Header {
+  display: flex;
   padding: 10px;
-  position: relative;
+  justify-content: space-between;
 }
 
-.Calendar_ShiftDateControls {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 20px 10px;
+.Calendar .Calendar__DateDisplayer {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.Calendar__Month,
-.Calendar__Year {
-  -webkit-appearance: none;
-  display: inline-block;
+.Calendar .Calendar__DateShifter {
+  flex: 0 0 auto;
+  margin-left: 10px;
+}
+
+.Calendar .Calendar__Month,
+.Calendar .Calendar__Year {
+  display: inline;
   padding: 0;
   border: none;
   border-radius: 0;
@@ -26,11 +35,50 @@
   outline: none;
 }
 
-.Calendar__Year {
-  font-weight: 300;
-  margin: 0.2em;
+.Calendar .Calendar__Month {
+  margin-right: 0.2em;
 }
 
-.Calendar__Year {
-  width: 115px;
+.Calendar .Calendar__Year {
+  font-weight: 300;
+}
+
+.Calendar .Calendar__Grid {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(7, 1fr);
+  margin: 0;
+  padding: 0;
+  padding-left: 1px;
+  padding-bottom: 1px;
+  list-style: none;
+}
+
+.Calendar .Calendar__Grid.Calendar__Grid--header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  grid-template-rows: repeat(1, auto);
+}
+
+.Calendar .Calendar__Grid.Calendar__Grid--month {
+  margin-top: -1px;
+}
+
+.Calendar .Calendar__Grid > * {
+  margin-left: -1px;
+  margin-bottom: -1px;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0);
+  overflow: hidden;
+  position: relative;
+}
+
+.Calendar .Calendar__Grid.Calendar__Grid--month > * {
+  border-color: rgba(0, 0, 0, 0.05);
+  grid-template-rows: repeat(6, auto);
+}
+
+.Calendar .Calendar__Grid.Calendar__Grid--header > *,
+.Calendar .Calendar__Grid.Calendar__Grid--month .Calendar__DayNumber {
+  padding: 10px;
+  text-align: end;
 }
